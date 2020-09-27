@@ -6,10 +6,9 @@ def addPadding(n, vec):
     res.extend([0] * (n-len(vec)))
     return res
 
-def delPadding(vec, *n):
-    if len(n) > 2: raise Exception("There must be 1 or 2 length args")
-    m = sum(n) + (-1 if len(n) == 2 else 0)
-    return vec[:(len(vec)-(len(vec)-m))]
+def delPadding(vec, m, n = 1):
+    t = m + n - 1
+    return vec[:t]
     
 def preprocess(a, b):
     veclen = int(math.pow(2, math.ceil(math.log(len(a)+len(b)-1, 2))))

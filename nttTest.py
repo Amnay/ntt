@@ -3,11 +3,11 @@ import random
 import numpy
 import unittest
 import nttUtils
-import NTT
+import ntt
 import math
 
-straightNTT = (NTT.straight_tf, NTT.pointValue_product, NTT.straight_Itf)
-radix2NTT   = (NTT.radix2_tf,   NTT.pointValue_product, NTT.radix2_Itf)
+straightNTT = (ntt.straight_tf, ntt.pointValue_product, ntt.straight_Itf)
+radix2NTT   = (ntt.radix2_tf,   ntt.pointValue_product, ntt.radix2_Itf)
 
 def initVector():   
     veclen = random.randrange(100) + 1
@@ -24,7 +24,7 @@ class NumberTheoreticTransform(unittest.TestCase):
             a = initVector()
             
             veclen = int(math.pow(2, math.ceil(math.log(len(a), 2))))
-            x = NTT.addPadding(veclen, a)
+            x = ntt.addPadding(veclen, a)
 
             mod = nttUtils.find_mod(x)
             root = nttUtils.find_root(veclen, mod)
@@ -39,7 +39,7 @@ class NumberTheoreticTransform(unittest.TestCase):
             a = initVector()
             
             veclen = int(math.pow(2, math.ceil(math.log(len(a), 2))))
-            x = NTT.addPadding(veclen, a)
+            x = ntt.addPadding(veclen, a)
             
             mod = nttUtils.find_mod(x)
             root = nttUtils.find_root(veclen, mod)
@@ -53,8 +53,8 @@ class NumberTheoreticTransform(unittest.TestCase):
         for _ in range(self.TRIALS):
             a, b = initVector(), initVector()
             
-            c, root, mod = NTT.run(a, b, *straightNTT)
-            d, root, mod = NTT.run(a, b, *radix2NTT)
+            c, root, mod = ntt.run(a, b, *straightNTT)
+            d, root, mod = ntt.run(a, b, *radix2NTT)
             
             res = numpy.convolve(a, b).tolist()
             res = [v % mod for v in res]
@@ -67,7 +67,7 @@ class NumberTheoreticTransform(unittest.TestCase):
             a = initVector()
             
             veclen = int(math.pow(2, math.ceil(math.log(len(a), 2))))
-            x = NTT.addPadding(veclen, a)
+            x = ntt.addPadding(veclen, a)
             
             mod = nttUtils.find_mod(x)
             root = nttUtils.find_root(veclen, mod)
@@ -75,8 +75,8 @@ class NumberTheoreticTransform(unittest.TestCase):
             c = straightNTT[2](straightNTT[0](x, root, mod), root, mod)
             d = radix2NTT[2](radix2NTT[0](x, root, mod), root, mod)
 			
-            e = NTT.delPadding(c, len(a))
-            f = NTT.delPadding(d, len(a))
+            e = ntt.delPadding(c, len(a))
+            f = ntt.delPadding(d, len(a))
             
             self.assertEqual(a, e)
             self.assertEqual(a, f)
@@ -85,8 +85,8 @@ class NumberTheoreticTransform(unittest.TestCase):
     def test_linearity(self):
         for _ in range(self.TRIALS):
             a, b = initVector(), initVector()
-            x, y = NTT.preprocess(a, b)
-            root, mod = NTT.params(x, y)
+            x, y = ntt.preprocess(a, b)
+            root, mod = ntt.params(x, y)
 
             d = radix2NTT[0](x, root, mod)
             e = radix2NTT[0](y, root, mod)
